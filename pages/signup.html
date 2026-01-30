@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sign Up — Remote Pro Jobs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f172a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/signup.css" />
+</head>
+<body>
+
+<main class="auth-card">
+  <h1>Create Account</h1>
+
+  <form id="signupForm">
+    <input type="text" name="name" placeholder="Full Name" required />
+    <input type="text" name="phone" placeholder="Phone Number" required />
+    <input type="email" name="email" placeholder="Email Address" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <input type="password" name="confirm" placeholder="Confirm Password" required />
+
+    <button type="submit">Create Account</button>
+    <p id="signupMessage" class="message"></p>
+  </form>
+
+  <p class="auth-link">
+    Already have an account? <a href="login.html">Login</a>
+  </p>
+</main>
+
+<script src="../scripts/signup.js"></script>
+</body>
+</html>

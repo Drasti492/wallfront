@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Crypto Wallet - Trust Wallet Style</title>
+    <link rel="stylesheet" href="../styles/wallet.css">
+</head>
+<body>
+    <div class="wallet-container">
+        <div class="header">
+            <h1>Trust Wallet Pro</h1>
+            <div class="balance">$0.00</div>
+            <div class="profile-icon" id="profileIcon">P</div>
+        </div>
+        <div class="wallet-address">Wallet Address: Loading...</div>
+        <div class="nav-bar">
+            <div class="nav-item active" data-tab="wallet">Wallet</div>
+            <div class="nav-item" data-tab="swap">Swap</div>
+            <div class="nav-item" data-tab="dapps">DApps</div>
+            <div class="nav-item" data-tab="nft">NFTs</div>
+        </div>
+        <div class="sections active" id="walletSection">
+            <div class="buttons">
+                <div class="button" id="sendBtn">Send</div>
+                <div class="button" id="depositBtn">Deposit</div>
+                <div class="button" id="withdrawBtn">Withdraw</div>
+            </div>
+            <div class="section">
+                <h2>Assets (Live Market Stats from Binance)</h2>
+                <ul class="asset-list" id="assetList">
+                    <!-- Dynamically populated -->
+                </ul>
+            </div>
+            <div class="section">
+                <h2>Transactions & Withdrawal History</h2>
+                <ul class="transaction-list" id="transactionList">
+                    <!-- Dynamically populated -->
+                </ul>
+            </div>
+        </div>
+        <div class="sections" id="swapSection">
+            <div class="section">
+                <h2>Swap Tokens (Live Rates)</h2>
+                <div class="swap-form">
+                    <label>From:</label>
+                    <select id="fromCoin">
+                        <option value="bnb">BNB</option>
+                        <option value="btc">BTC</option>
+                        <option value="eth">ETH</option>
+                        <option value="sol">SOL</option>
+                        <option value="xrp">XRP</option>
+                        <option value="ada">ADA</option>
+                        <option value="doge">DOGE</option>
+                        <option value="trx">TRX</option>
+                    </select>
+                    <input type="number" id="fromAmount" placeholder="Amount">
+                    <label>To:</label>
+                    <select id="toCoin">
+                        <option value="bnb">BNB</option>
+                        <option value="btc">BTC</option>
+                        <option value="eth">ETH</option>
+                        <option value="sol">SOL</option>
+                        <option value="xrp">XRP</option>
+                        <option value="ada">ADA</option>
+                        <option value="doge">DOGE</option>
+                        <option value="trx">TRX</option>
+                    </select>
+                    <div class="fee-info" id="swapEstimate">Estimated Output: 0.00 | Fee: $0.50</div>
+                    <div class="button" id="swapBtn">Swap Now</div>
+                </div>
+            </div>
+        </div>
+        <div class="sections" id="dappsSection">
+            <div class="section">
+                <h2>DApps Browser</h2>
+                <div class="dapps-info">
+                    <p>Connect to popular decentralized apps. Click to open in a new tab.</p>
+                    <div class="dapps-list">
+                        <a href="https://app.uniswap.org/" target="_blank" class="button">Uniswap</a>
+                        <a href="https://pancakeswap.finance/" target="_blank" class="button">PancakeSwap</a>
+                        <a href="https://opensea.io/" target="_blank" class="button">OpenSea</a>
+                        <a href="https://aave.com/" target="_blank" class="button">Aave</a>
+                        <a href="https://compound.finance/" target="_blank" class="button">Compound</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sections" id="nftSection">
+            <div class="section">
+                <h2>NFTs</h2>
+                <ul class="nft-list">
+                    <li class="asset-item">
+                        <span class="name">CryptoPunk #1234</span>
+                        <span class="value">$1,000.00</span>
+                    </li>
+                    <li class="asset-item">
+                        <span class="name">Bored Ape #5678</span>
+                        <span class="value">$2,500.00</span>
+                    </li>
+                    <li class="asset-item">
+                        <span class="name">Cool Cat #9101</span>
+                        <span class="value">$800.00</span>
+                    </li>
+                    <li class="asset-item">
+                        <span class="name">Azuki #2345</span>
+                        <span class="value">$1,200.00</span>
+                    </li>
+                    <li class="asset-item">
+                        <span class="name">World of Women #6789</span>
+                        <span class="value">$900.00</span>
+                    </li>
+                </ul>
+                <div class="button">View More NFTs</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-modal" id="profileModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeProfile">&times;</span>
+            <h2>Profile Details</h2>
+            <p id="profileName">Name: Loading...</p>
+            <p id="profileAddress">Wallet Address: Loading...</p>
+            <p id="profileEmail">Email: Loading...</p>
+            <div class="button" id="settingsBtn">Settings</div>
+        </div>
+    </div>
+
+    <div class="send-modal" id="sendModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeSend">&times;</span>
+            <h2>Send Crypto</h2>
+            <input class="modal-input" id="recipientAddress" type="text" placeholder="Paste Recipient Address">
+            <input class="modal-input" id="sendAmount" type="number" placeholder="Amount">
+            <select class="modal-select" id="sendCoin">
+                <option value="bnb">BNB</option>
+                <option value="btc">BTC</option>
+                <option value="eth">ETH</option>
+                <option value="sol">SOL</option>
+                <option value="xrp">XRP</option>
+                <option value="ada">ADA</option>
+                <option value="doge">DOGE</option>
+                <option value="trx">TRX</option>
+            </select>
+            <input class="modal-input" type="text" placeholder="Memo (optional)">
+            <select class="modal-select">
+                <option>Network: Binance Smart Chain</option>
+                <option>Network: Ethereum</option>
+            </select>
+            <div class="fee-info">Estimated Gas Fee: $1.20</div>
+            <div class="button" id="confirmSend">Confirm Send</div>
+        </div>
+    </div>
+
+    <div class="deposit-modal" id="depositModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeDeposit">&times;</span>
+            <h2>Deposit</h2>
+            <select class="modal-select">
+                <option>From Bank Account</option>
+                <option>From Another Wallet</option>
+            </select>
+            <input class="modal-input" type="number" placeholder="Amount">
+            <select class="modal-select">
+                <option>Currency: USD</option>
+                <option>Currency: EUR</option>
+            </select>
+            <div class="fee-info">Deposit Fee: 0%</div>
+            <div class="button" id="confirmDeposit">Confirm Deposit</div>
+        </div>
+    </div>
+
+    <div class="withdraw-modal" id="withdrawModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeWithdraw">&times;</span>
+            <h2>Withdraw</h2>
+            <input class="modal-input" id="withdrawAmount" type="number" placeholder="Amount (Max: $0.00)">
+            <input class="modal-input" id="phoneNumber" type="tel" placeholder="Phone Number for Receipt">
+            <select class="modal-select">
+                <option>To Bank Account</option>
+                <option>To Mobile Money</option>
+            </select>
+            <div class="fee-info">Withdrawal Fee: 1%</div>
+            <div class="button" id="confirmWithdraw">Confirm Withdraw</div>
+        </div>
+    </div>
+
+    <div class="settings-modal" id="settingsModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeSettings">&times;</span>
+            <h2>Settings</h2>
+            <p>Currency: USD</p>
+            <p>Network: Binance Smart Chain</p>
+            <p>Security: 2FA Enabled</p>
+            <div class="button" id="logoutBtn">Logout</div>
+        </div>
+    </div>
+
+    <script src="../scripts/wallet.js"></script>
+</body>
+</html>

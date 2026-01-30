@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Verify Email</title>
+  <link rel="stylesheet" href="../styles/signup.css" />
+</head>
+<body>
+
+<main class="auth-card">
+  <h1>Email Verification</h1>
+
+  <form id="verifyForm">
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="text" id="code" placeholder="6-digit code" required />
+    <button type="submit">Verify</button>
+    <p id="verifyMessage" class="message"></p>
+  </form>
+
+  <p class="auth-link">
+    Didn't get code? <a href="#" id="resend">Resend</a>
+  </p>
+</main>
+
+<script src="../scripts/verify.js"></script>
+</body>
+</html>
