@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!token) return window.location.href = "./login.html";
 
   let currentBalance = 0;
-  const MIN_WITHDRAW_USD = 4850;
+  const MIN_WITHDRAW_USD = 3000;
 
   /* ================= TOAST ================= */
   function showToast(message, type="info", duration=5000) {
