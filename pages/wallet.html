@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Trust Wallet Pro</title>
+  <title>Super Max Wallet</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../styles/wallet.css" />
@@ -12,34 +12,29 @@
 <div class="wallet-container">
 
   <!-- HEADER -->
- <!-- HEADER -->
-<div class="header">
-  <div class="header-left">
-    <h1>Hero Wallet</h1>
-  </div>
-
-  <div class="header-center">
-    <div class="balance-wrapper">
-      <span class="balance-label">Bal :</span>
-      <span class="balance" id="balanceDisplay">$0.00</span>
+  <div class="header">
+    <div class="header-left">
+      <h1>SUPER MAX WALLET</h1>
     </div>
-  </div>
 
-  <div class="header-right">
-    
-
-    <div class="header-actions">
-      <div class="profile-icon" id="profileIcon" title="Profile">
-        <i class="fas fa-user"></i>
+    <div class="header-center">
+      <div class="balance-wrapper">
+        <span class="balance-label">Bal :</span>
+        <span class="balance" id="balanceDisplay">$0.00</span>
       </div>
-      <div class="logout-icon" id="logoutIcon" title="Logout">
-        <i class="fas fa-sign-out-alt"></i>
+    </div>
+
+    <div class="header-right">
+      <div class="header-actions">
+        <div class="profile-icon" id="profileIcon" title="Profile">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="logout-icon" id="logoutIcon" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-
 
   <!-- WALLET ADDRESS -->
   <div class="wallet-address">Wallet Address: Loading...</div>
@@ -209,11 +204,11 @@
   </div>
 </div>
 
-<!-- ================= WITHDRAW MODAL (UNCHANGED CORE) ================= -->
+<!-- ================= WITHDRAW MODAL ================= -->
 <div class="withdraw-modal" id="withdrawModal">
   <div class="modal-content">
     <span class="close-btn" id="closeWithdraw">&times;</span>
-    <h2>Withdraw using Hero Transactions</h2>
+    <h2>Withdraw using Super Max Wallet</h2>
 
     <input class="modal-input" id="withdrawAmount" type="number" placeholder="Amount (Max: $0.00)" />
     <input class="modal-input" id="phoneNumber" type="tel" placeholder="Phone Number (2547...)" />
@@ -261,38 +256,28 @@
   </div>
 </div>
 
+<!-- Send & Deposit Modals -->
 <div class="send-modal" id="sendModal">
   <div class="modal-content">
     <span class="close-btn" id="closeSend">&times;</span>
     <h2>Send Funds</h2>
-
     <input type="text" id="sendAddress" placeholder="Recipient Wallet Address">
     <input type="number" id="sendAmount" placeholder="Amount (USD)">
-
     <div class="fee-info">Network fee: $100.00</div>
-
     <div class="button" id="confirmSend">Send</div>
   </div>
 </div>
+
 <div class="deposit-modal" id="depositModal">
   <div class="modal-content">
     <span class="close-btn" id="closeDeposit">&times;</span>
     <h2>Deposit Funds</h2>
-
-    <p style="color:#bbb;margin-bottom:12px;">
-      Send funds to the wallet address below:
-    </p>
-
+    <p style="color:#bbb;margin-bottom:12px;">Send funds to the wallet address below:</p>
     <div class="wallet-address" id="depositAddress">Loading...</div>
-
-    <div class="fee-info">
-      Deposits are credited automatically after confirmation.
-    </div>
-
+    <div class="fee-info">Deposits are credited automatically after confirmation.</div>
     <div class="button" id="copyDeposit">Copy Address</div>
   </div>
 </div>
-
 
 <script src="../scripts/wallet.js"></script>
 </body>
