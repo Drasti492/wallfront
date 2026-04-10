@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentBalance = 0;
   const MIN_WITHDRAW_USD = 3000;
 
-  /* ================= TOAST ================= */
   function showToast(message, type="info", duration=5000) {
     const c = document.getElementById("toastContainer");
     const t = document.createElement("div");
@@ -20,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, duration);
   }
 
-  /* ================= WALLET ================= */
   fetch(`${API}/wallet/me`, {
     headers: { Authorization: `Bearer ${token}` }
   })
@@ -34,24 +32,21 @@ document.addEventListener("DOMContentLoaded", () => {
   .then(data => {
     currentBalance = Number(data.walletBalance || 0);
 
-    document.querySelector(".balance").textContent = `$${currentBalance.toFixed(2)}`;
-    document.querySelector(".wallet-address").textContent = data.walletAddress;
+    document.getElementById("balanceDisplay").textContent = `$${currentBalance.toFixed(2)}`;
+    document.getElementById("depositAddress").textContent = data.walletAddress;
     document.getElementById("profileName").textContent = `Name: ${data.name}`;
     document.getElementById("profileEmail").textContent = `Email: ${data.email}`;
     document.getElementById("profileAddress").textContent = `Wallet Address: ${data.walletAddress}`;
     document.getElementById("profileBalance").textContent = `Balance: $${currentBalance.toFixed(2)}`;
-    document.getElementById("withdrawAmount").placeholder =
-      `Amount (Min $${MIN_WITHDRAW_USD}, Max $${currentBalance.toFixed(2)})`;
+    document.getElementById("withdrawAmount").placeholder = `Amount (Min $${MIN_WITHDRAW_USD}, Max $${currentBalance.toFixed(2)})`;
 
-    document.querySelector(".profile-icon").textContent =
-      data.name ? data.name[0].toUpperCase() : "U";
+    document.getElementById("profileIcon").innerHTML = data.name ? data.name[0].toUpperCase() : "U";
 
     loadAssets();
     loadTransactions();
   })
   .catch(() => showToast("Failed to load wallet", "error"));
 
-  /* ================= ASSETS ================= */
   const symbols = ["BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT"];
   const names = { btc:"Bitcoin", eth:"Ethereum", bnb:"BNB", sol:"Solana" };
   const holdings = { btc:0.03, eth:0.4, bnb:5, sol:10 };
@@ -83,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch {}
   }
 
-  /* ================= TRANSACTIONS ================= */
   async function loadTransactions() {
     try {
       const res = await fetch(`${API}/transactions`, {
@@ -105,17 +99,23 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch {}
   }
 
-  /* ================= NAV ================= */
   document.querySelectorAll(".nav-item").forEach(n => {
     n.onclick = () => {
-      document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));
-      document.querySelectorAll(".sections").forEach(s=>s.classList.remove("active"));
+      document.querySelectorAll(".nav-item").forEach(x => x.classList.remove("active"));
+      document.querySelectorAll(".sections").forEach(s => s.classList.remove("active"));
       n.classList.add("active");
       document.getElementById(`${n.dataset.tab}Section`).classList.add("active");
     };
   });
 
-  /* ================= PROFILE / LOGOUT ================= */
+  const profileIcon = document.getElementById("profileIcon");
+  const logoutIcon = document.getElementById("logoutIcon");
+  const profileModal = document.getElementById("profileModal");
+  const closeProfile = document.getElementById("closeProfile");
+  const settingsBtn = document.getElementById("settingsBtn");
+  const settingsModal = document.getElementById("settingsModal");
+  const closeSettings = document.getElementById("closeSettings");
+
   profileIcon.onclick = () => profileModal.style.display = "flex";
   closeProfile.onclick = () => profileModal.style.display = "none";
   settingsBtn.onclick = () => settingsModal.style.display = "flex";
@@ -126,7 +126,18 @@ document.addEventListener("DOMContentLoaded", () => {
     location.href = "./login.html";
   };
 
-  /* ================= WITHDRAW ================= */
+  const withdrawBtn = document.getElementById("withdrawBtn");
+  const withdrawModal = document.getElementById("withdrawModal");
+  const closeWithdraw = document.getElementById("closeWithdraw");
+  const confirmWithdraw = document.getElementById("confirmWithdraw");
+  const withdrawAmount = document.getElementById("withdrawAmount");
+  const phoneNumber = document.getElementById("phoneNumber");
+  const confirmDialog = document.getElementById("confirmDialog");
+  const confirmMessage = document.getElementById("confirmMessage");
+  const cancelConfirm = document.getElementById("cancelConfirm");
+  const yesConfirm = document.getElementById("yesConfirm");
+  const loadingOverlay = document.getElementById("loadingOverlay");
+
   withdrawBtn.onclick = () => withdrawModal.style.display = "flex";
   closeWithdraw.onclick = () => withdrawModal.style.display = "none";
 
@@ -139,8 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    confirmMessage.innerHTML =
-      `Withdraw <strong>$${amount.toFixed(2)}</strong> to ${phone}?`;
+    confirmMessage.innerHTML = `Withdraw <strong>$${amount.toFixed(2)}</strong> to ${phone}?`;
     confirmDialog.classList.add("active");
   };
 
@@ -176,52 +186,61 @@ document.addEventListener("DOMContentLoaded", () => {
       loadingOverlay.classList.remove("active");
     }
   };
+
+  const sendModal = document.getElementById("sendModal");
+  const closeSend = document.getElementById("closeSend");
+
+  document.getElementById("sendBtn").onclick = () => sendModal.style.display = "flex";
+  closeSend.onclick = () => sendModal.style.display = "none";
+
+  document.getElementById("confirmSend").onclick = () => {
+    const addr = document.getElementById("sendAddress").value.trim();
+    const amt = Number(document.getElementById("sendAmount").value);
+
+    if (!addr || amt <= 0 || amt > currentBalance) {
+      showToast("Invalid send details", "error");
+      return;
+    }
+
+    showToast("Send feature is coming soon 🚧", "info", 6000);
+    sendModal.style.display = "none";
+  };
+
+  const depositModal = document.getElementById("depositModal");
+  const closeDeposit = document.getElementById("closeDeposit");
+
+  document.getElementById("depositBtn").onclick = () => {
+    depositModal.style.display = "flex";
+    document.getElementById("depositAddress").textContent = document.getElementById("depositAddress").textContent || "Loading...";
+  };
+
+  closeDeposit.onclick = () => depositModal.style.display = "none";
+
+  document.getElementById("copyDeposit").onclick = () => {
+    const addr = document.getElementById("depositAddress").textContent;
+    navigator.clipboard.writeText(addr);
+    showToast("Deposit address copied", "success");
+  };
+
+  // Mobile Sidebar Toggle
+  const menuToggle = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+
+  menuToggle.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+  });
+
+  document.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", () => {
+      if (window.innerWidth <= 900) {
+        sidebar.classList.remove("open");
+      }
+    });
+  });
+
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    });
+  });
 });
-
-
-/* ================= SEND ================= */
-const sendModal = document.getElementById("sendModal");
-const closeSend = document.getElementById("closeSend");
-
-document.getElementById("sendBtn").onclick = () => {
-  sendModal.style.display = "flex";
-};
-
-closeSend.onclick = () => {
-  sendModal.style.display = "none";
-  sendAddress.value = "";
-  sendAmount.value = "";
-};
-
-document.getElementById("confirmSend").onclick = () => {
-  const addr = sendAddress.value.trim();
-  const amt = Number(sendAmount.value);
-
-  if (!addr || amt <= 0 || amt > currentBalance) {
-    showToast("Invalid send details", "error");
-    return;
-  }
-
-  showToast("Send feature is coming soon 🚧", "info", 6000);
-  sendModal.style.display = "none";
-};
-
-/* ================= DEPOSIT ================= */
-const depositModal = document.getElementById("depositModal");
-const closeDeposit = document.getElementById("closeDeposit");
-
-document.getElementById("depositBtn").onclick = () => {
-  depositModal.style.display = "flex";
-  document.getElementById("depositAddress").textContent =
-    document.querySelector(".wallet-address").textContent;
-};
-
-closeDeposit.onclick = () => {
-  depositModal.style.display = "none";
-};
-
-document.getElementById("copyDeposit").onclick = () => {
-  const addr = document.getElementById("depositAddress").textContent;
-  navigator.clipboard.writeText(addr);
-  showToast("Deposit address copied", "success");
-};

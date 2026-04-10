@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Super Max Wallet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #00f5ff;
+      --accent: #9d4edd;
+      --dark: #0a0a1f;
+      --card: #12121a;
+      --text: #e0e0ff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0a0a1f 0%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .app {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      background: var(--card);
+      border-right: 1px solid rgba(157, 78, 221, 0.2);
+      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .logo {
+      padding: 0 24px 32px;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -1px;
+    }
+
+    .nav-item {
+      padding: 14px 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      transition: all 0.3s;
+      color: #aaa;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: rgba(157, 78, 221, 0.15);
+      color: white;
+    }
+
+    .nav-item.active {
+      border-left: 4px solid var(--primary);
+      background: rgba(0, 245, 255, 0.08);
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #00f5ff, #9d4edd);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-left h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+    }
+
+    .balance-box {
+      background: rgba(255,255,255,0.25);
+      padding: 12px 24px;
+      border-radius: 16px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .balance-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    .balance {
+      font-size: 2.1rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .profile-icon { background: #0a0a1f; color: var(--primary); }
+    .logout-icon { background: #9d4edd; color: white; }
+
+    .icon-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .content {
+      flex: 1;
+      padding: 32px;
+      overflow-y: auto;
+      background: var(--dark);
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 28px;
+      border: 1px solid rgba(157, 78, 221, 0.15);
+    }
+
+    h2 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .button {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #000;
+      padding: 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1.05rem;
+    }
+
+    .button:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(157, 78, 221, 0.4);
+    }
+
+    .asset-list, .transaction-list {
+      list-style: none;
+    }
+
+    .asset-item, .transaction-item {
+      background: rgba(255,255,255,0.03);
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .transaction-item {
+      grid-template-columns: 1.5fr 1fr 1fr;
+    }
+
+    .asset-item:hover, .transaction-item:hover {
+      background: rgba(0, 245, 255, 0.08);
+    }
+
+    .positive { color: #00ff9d; }
+    .negative { color: #ff4d4d; }
+
+    /* Forms */
+    input, select {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 16px;
+      background: #1f1f2e;
+      border: 1px solid #444;
+      border-radius: 10px;
+      color: white;
+      font-size: 1rem;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .fee-info {
+      color: #888;
+      font-size: 0.9rem;
+      margin: 10px 0 20px;
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 31, 0.95);
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .modal-content {
+      background: var(--card);
+      border-radius: 18px;
+      width: 90%;
+      max-width: 460px;
+      padding: 28px;
+      border: 1px solid rgba(157, 78, 221, 0.3);
+    }
+
+    .close-btn {
+      float: right;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #777;
+    }
+
+    .close-btn:hover { color: var(--primary); }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3000;
+    }
+
+    .toast {
+      background: #1f1f2e;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      min-width: 280px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.4s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success { border-left: 5px solid #00ff9d; }
+    .toast.error   { border-left: 5px solid #ff4d4d; }
+    .toast.info    { border-left: 5px solid var(--primary); }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(0,245,255,0.2);
+      border-top: 5px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar { width: 220px; }
+      .content { padding: 20px; }
+      .asset-item, .transaction-item {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">SUPER MAX WALLET</div>
+    
+    <div class="nav-item active" data-tab="wallet"><i class="fas fa-wallet"></i> Wallet</div>
+    <div class="nav-item" data-tab="swap"><i class="fas fa-exchange-alt"></i> Swap</div>
+    <div class="nav-item" data-tab="send"><i class="fas fa-paper-plane"></i> Send</div>
+    <div class="nav-item" data-tab="deposit"><i class="fas fa-download"></i> Deposit</div>
+    <div class="nav-item" data-tab="dapps"><i class="fas fa-plug"></i> DApps</div>
+    <div class="nav-item" data-tab="nft"><i class="fas fa-gem"></i> NFTs</div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-left">
+        <h1>SUPER MAX WALLET</h1>
+      </div>
+      
+      <div class="balance-box">
+        <div class="balance-label">Available Balance</div>
+        <div class="balance" id="balanceDisplay">$12,458.75</div>
+      </div>
+
+      <div class="header-right">
+        <div class="icon-btn profile-icon" id="profileIcon" title="Profile">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="icon-btn logout-icon" id="logoutIcon" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT AREA -->
+    <div class="content">
+
+      <!-- WALLET SECTION -->
+      <div class="section active" id="walletSection">
+        <div class="buttons">
+          <div class="button" id="sendBtn">Send</div>
+          <div class="button" id="depositBtn">Deposit</div>
+          <div class="button" id="withdrawBtn">Withdraw</div>
+        </div>
+
+        <div class="card">
+          <h2>Assets</h2>
+          <ul class="asset-list" id="assetList"></ul>
+        </div>
+
+        <div class="card">
+          <h2>Recent Transactions</h2>
+          <ul class="transaction-list" id="transactionList"></ul>
+        </div>
+      </div>
+
+      <!-- SWAP SECTION -->
+      <div class="section" id="swapSection">
+        <div class="card">
+          <h2>Swap Tokens</h2>
+          <div class="swap-form">
+            <label>From</label>
+            <select id="fromCoin">
+              <option value="btc">BTC</option>
+              <option value="eth">ETH</option>
+              <option value="bnb">BNB</option>
+              <option value="usdt">USDT</option>
+            </select>
+            <input type="number" id="fromAmount" placeholder="Amount" />
+
+            <label>To</label>
+            <select id="toCoin">
+              <option value="eth">ETH</option>
+              <option value="btc">BTC</option>
+              <option value="bnb">BNB</option>
+              <option value="usdt">USDT</option>
+            </select>
+
+            <div class="fee-info" id="swapEstimate">Estimated Output: 0.00 | Fee: $0.50</div>
+            <div class="button" id="swapBtn">Swap Now</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEND SECTION -->
+      <div class="section" id="sendSection">
+        <div class="card">
+          <h2>Send Crypto</h2>
+          <input type="text" id="sendAddress" placeholder="Recipient Wallet Address" />
+          <input type="number" id="sendAmountInput" placeholder="Amount" />
+          <select id="sendCoin">
+            <option value="btc">BTC</option>
+            <option value="eth">ETH</option>
+            <option value="bnb">BNB</option>
+            <option value="usdt">USDT</option>
+          </select>
+          <div class="fee-info">Estimated Gas Fee: $1.20</div>
+          <div class="button" id="confirmSend">Confirm Send</div>
+        </div>
+      </div>
+
+      <!-- DEPOSIT SECTION -->
+      <div class="section" id="depositSection">
+        <div class="card">
+          <h2>Deposit Funds</h2>
+          <p>Your wallet address:</p>
+          <div class="wallet-address" id="depositAddressDisplay" style="background:#1f1f2e;padding:14px;border-radius:10px;margin:12px 0;word-break:break-all;font-family:monospace;">
+            0x742d35Cc6634C0532925a3b8D7c4A6c8e8c9d8f2
+          </div>
+          <div class="button" id="confirmDeposit">I Have Deposited</div>
+        </div>
+      </div>
+
+      <!-- DAPPS SECTION -->
+      <div class="section" id="dappsSection">
+        <div class="card">
+          <h2>Popular DApps</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+            <a href="https://app.uniswap.org" target="_blank" class="button">Uniswap</a>
+            <a href="https://pancakeswap.finance" target="_blank" class="button">PancakeSwap</a>
+            <a href="https://opensea.io" target="_blank" class="button">OpenSea</a>
+            <a href="https://aave.com" target="_blank" class="button">Aave</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- NFT SECTION -->
+      <div class="section" id="nftSection">
+        <div class="card">
+          <h2>NFT Collection</h2>
+          <ul class="asset-list">
+            <li class="asset-item"><span>CryptoPunk #4567</span><span>$1,000</span></li>
+            <li class="asset-item"><span>Bored Ape #5678</span><span>$2,500</span></li>
+            <li class="asset-item"><span>Azuki #2345</span><span>$1,200</span></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal" id="profileModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeProfile">&times;</span>
+    <h2>Profile</h2>
+    <p id="profileName">Name: Johnny Hopps</p>
+    <p id="profileEmail">Email: johnny@example.com</p>
+    <p id="profileAddress">Wallet Address: 0x742d35Cc6634C0532925a3b8D7c4A6c8e8c9d8f2</p>
+    <p id="profileBalance">Balance: $12,458.75</p>
+    <div class="button" id="settingsBtn" style="margin-top:20px;">Settings</div>
+  </div>
+</div>
+
+<!-- WITHDRAW MODAL -->
+<div class="modal" id="withdrawModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeWithdraw">&times;</span>
+    <h2>Withdraw Funds</h2>
+    <input id="withdrawAmount" type="number" placeholder="Amount (Min $3000)" />
+    <input id="phoneNumber" type="tel" placeholder="Phone Number (2547...)" />
+    <select>
+      <option>To Mobile Money (M-Pesa)</option>
+      <option>To Bank Account</option>
+    </select>
+    <div class="fee-info">Withdrawal Fee: 1%</div>
+    <div class="button" id="confirmWithdraw">Confirm Withdrawal</div>
+  </div>
+</div>
+
+<!-- SEND MODAL -->
+<div class="modal" id="sendModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeSend">&times;</span>
+    <h2>Send Funds</h2>
+    <input type="text" id="sendAddressModal" placeholder="Recipient Address">
+    <input type="number" id="sendAmountModal" placeholder="Amount">
+    <div class="fee-info">Network fee will be calculated</div>
+    <div class="button" id="confirmSendModal">Send Now</div>
+  </div>
+</div>
+
+<!-- DEPOSIT MODAL -->
+<div class="modal" id="depositModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeDeposit">&times;</span>
+    <h2>Deposit</h2>
+    <p style="margin-bottom:12px;color:#bbb;">Send funds to this address:</p>
+    <div id="depositAddress" style="background:#1f1f2e;padding:16px;border-radius:10px;word-break:break-all;margin-bottom:16px;font-family:monospace;">
+      0x742d35Cc6634C0532925a3b8D7c4A6c8e8c9d8f2
+    </div>
+    <div class="button" id="copyDeposit">Copy Address</div>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div class="modal" id="loadingOverlay" style="background:rgba(10,10,31,0.98);">
+  <div class="modal-content" style="text-align:center;">
+    <div class="spinner"></div>
+    <p>Processing...</p>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="modal" id="confirmDialog">
+  <div class="modal-content">
+    <h3>Confirm Action</h3>
+    <p id="confirmMessage">Are you sure?</p>
+    <div style="display:flex;gap:12px;margin-top:24px;">
+      <button id="cancelConfirm" style="flex:1;padding:14px;background:#333;border:none;border-radius:10px;color:white;cursor:pointer;">Cancel</button>
+      <button id="yesConfirm" style="flex:1;padding:14px;background:linear-gradient(135deg,#00f5ff,#9d4edd);border:none;border-radius:10px;color:black;font-weight:700;cursor:pointer;">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ================== ALL JAVASCRIPT (No Login Required) ==================
+document.addEventListener("DOMContentLoaded", () => {
+  // Hardcoded demo data (no API token needed)
+  let currentBalance = 12458.75;
+  const MIN_WITHDRAW_USD = 3000;
+
+  /* ================= TOAST ================= */
+  function showToast(message, type="info", duration=5000) {
+    const c = document.getElementById("toastContainer");
+    const t = document.createElement("div");
+    t.className = `toast ${type}`;
+    t.textContent = message;
+    c.appendChild(t);
+    setTimeout(() => t.classList.add("show"), 50);
+    setTimeout(() => {
+      t.classList.remove("show");
+      setTimeout(() => t.remove(), 400);
+    }, duration);
+  }
+
+  /* ================= LOAD ASSETS (Demo) ================= */
+  const symbols = ["BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT"];
+  const names = { btc:"Bitcoin", eth:"Ethereum", bnb:"BNB", sol:"Solana" };
+  const holdings = { btc:0.03, eth:0.4, bnb:5, sol:10 };
+
+  function loadAssets() {
+    const list = document.getElementById("assetList");
+    list.innerHTML = "";
+
+    // Simulate prices
+    const fakePrices = {
+      BTCUSDT: { lastPrice: "68250", priceChangePercent: "1.25" },
+      ETHUSDT: { lastPrice: "2450.75", priceChangePercent: "-0.85" },
+      BNBUSDT: { lastPrice: "612.30", priceChangePercent: "2.45" },
+      SOLUSDT: { lastPrice: "148.90", priceChangePercent: "4.12" }
+    };
+
+    symbols.forEach(sym => {
+      const p = fakePrices[sym];
+      if (!p) return;
+      const id = sym.replace("USDT","").toLowerCase();
+      const value = holdings[id] * Number(p.lastPrice);
+
+      list.innerHTML += `
+        <li class="asset-item">
+          <span>${names[id]}</span>
+          <span>$${Number(p.lastPrice).toFixed(2)}</span>
+          <span class="${Number(p.priceChangePercent)>=0?"positive":"negative"}">
+            ${p.priceChangePercent}%
+          </span>
+          <span>$${value.toFixed(2)}</span>
+        </li>
+      `;
+    });
+  }
+
+  /* ================= LOAD TRANSACTIONS (Demo) ================= */
+  function loadTransactions() {
+    const list = document.getElementById("transactionList");
+    list.innerHTML = `
+      <li class="transaction-item">
+        <span>DEPOSIT</span>
+        <span>$2,500.00</span>
+        <span class="status completed">COMPLETED</span>
+      </li>
+      <li class="transaction-item">
+        <span>WITHDRAW</span>
+        <span>$850.00</span>
+        <span class="status completed">COMPLETED</span>
+      </li>
+      <li class="transaction-item">
+        <span>SEND</span>
+        <span>$320.00</span>
+        <span class="status pending">PENDING</span>
+      </li>
+    `;
+  }
+
+  // Initial Load
+  document.getElementById("balanceDisplay").textContent = `$${currentBalance.toFixed(2)}`;
+  loadAssets();
+  loadTransactions();
+
+  /* ================= NAVIGATION ================= */
+  document.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", () => {
+      document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+      
+      item.classList.add("active");
+      document.getElementById(item.dataset.tab + "Section").classList.add("active");
+    });
+  });
+
+  /* ================= PROFILE & LOGOUT ================= */
+  const profileModal = document.getElementById("profileModal");
+  document.getElementById("profileIcon").onclick = () => profileModal.style.display = "flex";
+  document.getElementById("closeProfile").onclick = () => profileModal.style.display = "none";
+
+  document.getElementById("logoutIcon").onclick = () => {
+    if (confirm("Logout from Super Max Wallet?")) {
+      showToast("Logged out successfully", "info");
+      // You can add window.close() or just stay on the page
+    }
+  };
+
+  /* ================= WITHDRAW ================= */
+  const withdrawModal = document.getElementById("withdrawModal");
+  document.getElementById("withdrawBtn").onclick = () => withdrawModal.style.display = "flex";
+  document.getElementById("closeWithdraw").onclick = () => withdrawModal.style.display = "none";
+
+  const confirmDialog = document.getElementById("confirmDialog");
+  document.getElementById("confirmWithdraw").onclick = () => {
+    const amount = Number(document.getElementById("withdrawAmount").value);
+    const phone = document.getElementById("phoneNumber").value.trim();
+
+    if (!phone || amount < MIN_WITHDRAW_USD || amount > currentBalance) {
+      showToast("Invalid withdrawal details (Min $3000)", "error");
+      return;
+    }
+
+    document.getElementById("confirmMessage").innerHTML = 
+      `Withdraw <strong>$${amount.toFixed(2)}</strong> to ${phone}?`;
+    confirmDialog.style.display = "flex";
+  };
+
+  document.getElementById("cancelConfirm").onclick = () => confirmDialog.style.display = "none";
+  document.getElementById("yesConfirm").onclick = () => {
+    confirmDialog.style.display = "none";
+    document.getElementById("loadingOverlay").style.display = "flex";
+
+    setTimeout(() => {
+      document.getElementById("loadingOverlay").style.display = "none";
+      showToast("Withdrawal initiated successfully (Demo)", "success");
+      withdrawModal.style.display = "none";
+      loadTransactions();
+    }, 1500);
+  };
+
+  /* ================= SEND ================= */
+  const sendModal = document.getElementById("sendModal");
+  document.getElementById("sendBtn").onclick = () => sendModal.style.display = "flex";
+  document.getElementById("closeSend").onclick = () => sendModal.style.display = "none";
+
+  document.getElementById("confirmSendModal").onclick = () => {
+    showToast("Send feature is coming soon 🚧", "info");
+    sendModal.style.display = "none";
+  };
+
+  /* ================= DEPOSIT ================= */
+  const depositModal = document.getElementById("depositModal");
+  document.getElementById("depositBtn").onclick = () => {
+    depositModal.style.display = "flex";
+  };
+  document.getElementById("closeDeposit").onclick = () => depositModal.style.display = "none";
+
+  document.getElementById("copyDeposit").onclick = () => {
+    const addr = document.getElementById("depositAddress").textContent;
+    navigator.clipboard.writeText(addr).then(() => {
+      showToast("Address copied to clipboard", "success");
+    });
+  };
+
+  // Close modals when clicking outside
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    });
+  });
+
+  // Show welcome toast
+  setTimeout(() => {
+    showToast("Welcome to Super Max Wallet!", "success", 4000);
+  }, 800);
+});
+</script>
+</body>
+</html>
