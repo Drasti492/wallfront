@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!token) return window.location.href = "./login.html";
 
   let currentBalance = 0;
-  const MIN_WITHDRAW_USD = 7500;
+  const MIN_WITHDRAW_USD = 2000;
 
   /* ================= TOAST ================= */
   function showToast(message, type="info", duration=5000) {
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("profileBalance").textContent = `Balance: $${currentBalance.toFixed(2)}`;
 
     document.getElementById("withdrawAmount").placeholder =
-      `Amount (Min $${MIN_WITHDRAW_USD}, Max $${currentBalance.toFixed(2)})`;
+      `Amount ,`;
 
     // Profile icon initial
     document.getElementById("profileIcon").innerHTML = 
