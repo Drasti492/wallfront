@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentBalance = 0;
   const MIN_WITHDRAW_USD = 3000;
 
+  /* ================= TOAST ================= */
   function showToast(message, type="info", duration=5000) {
     const c = document.getElementById("toastContainer");
     const t = document.createElement("div");
@@ -19,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, duration);
   }
 
+  /* ================= WALLET DATA ================= */
   fetch(`${API}/wallet/me`, {
     headers: { Authorization: `Bearer ${token}` }
   })
@@ -34,19 +36,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("balanceDisplay").textContent = `$${currentBalance.toFixed(2)}`;
     document.getElementById("depositAddress").textContent = data.walletAddress;
+
     document.getElementById("profileName").textContent = `Name: ${data.name}`;
     document.getElementById("profileEmail").textContent = `Email: ${data.email}`;
     document.getElementById("profileAddress").textContent = `Wallet Address: ${data.walletAddress}`;
     document.getElementById("profileBalance").textContent = `Balance: $${currentBalance.toFixed(2)}`;
-    document.getElementById("withdrawAmount").placeholder = `Amount (Min $${MIN_WITHDRAW_USD}, Max $${currentBalance.toFixed(2)})`;
 
-    document.getElementById("profileIcon").innerHTML = data.name ? data.name[0].toUpperCase() : "U";
+    document.getElementById("withdrawAmount").placeholder =
+      `Amount (Min $${MIN_WITHDRAW_USD}, Max $${currentBalance.toFixed(2)})`;
+
+    // Profile icon initial
+    document.getElementById("profileIcon").innerHTML = 
+      data.name ? data.name[0].toUpperCase() : "U";
 
     loadAssets();
     loadTransactions();
   })
   .catch(() => showToast("Failed to load wallet", "error"));
 
+  /* ================= ASSETS ================= */
   const symbols = ["BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT"];
   const names = { btc:"Bitcoin", eth:"Ethereum", bnb:"BNB", sol:"Solana" };
   const holdings = { btc:0.03, eth:0.4, bnb:5, sol:10 };
@@ -78,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch {}
   }
 
+  /* ================= TRANSACTIONS ================= */
   async function loadTransactions() {
     try {
       const res = await fetch(`${API}/transactions`, {
@@ -99,6 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch {}
   }
 
+  /* ================= NAVIGATION ================= */
   document.querySelectorAll(".nav-item").forEach(n => {
     n.onclick = () => {
       document.querySelectorAll(".nav-item").forEach(x => x.classList.remove("active"));
@@ -108,24 +118,25 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   });
 
-  const profileIcon = document.getElementById("profileIcon");
-  const logoutIcon = document.getElementById("logoutIcon");
-  const profileModal = document.getElementById("profileModal");
-  const closeProfile = document.getElementById("closeProfile");
-  const settingsBtn = document.getElementById("settingsBtn");
-  const settingsModal = document.getElementById("settingsModal");
-  const closeSettings = document.getElementById("closeSettings");
+  /* ================= PROFILE / LOGOUT / SETTINGS ================= */
+  document.getElementById("profileIcon").onclick = () => 
+    document.getElementById("profileModal").style.display = "flex";
 
-  profileIcon.onclick = () => profileModal.style.display = "flex";
-  closeProfile.onclick = () => profileModal.style.display = "none";
-  settingsBtn.onclick = () => settingsModal.style.display = "flex";
-  closeSettings.onclick = () => settingsModal.style.display = "none";
+  document.getElementById("closeProfile").onclick = () => 
+    document.getElementById("profileModal").style.display = "none";
 
-  logoutIcon.onclick = () => {
+  document.getElementById("settingsBtn").onclick = () => 
+    document.getElementById("settingsModal").style.display = "flex";
+
+  document.getElementById("closeSettings").onclick = () => 
+    document.getElementById("settingsModal").style.display = "none";
+
+  document.getElementById("logoutIcon").onclick = () => {
     localStorage.clear();
     location.href = "./login.html";
   };
 
+  /* ================= WITHDRAW - FIXED ================= */
   const withdrawBtn = document.getElementById("withdrawBtn");
   const withdrawModal = document.getElementById("withdrawModal");
   const closeWithdraw = document.getElementById("closeWithdraw");
@@ -151,14 +162,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     confirmMessage.innerHTML = `Withdraw <strong>$${amount.toFixed(2)}</strong> to ${phone}?`;
-    confirmDialog.classList.add("active");
+    confirmDialog.style.display = "flex";
   };
 
-  cancelConfirm.onclick = () => confirmDialog.classList.remove("active");
+  cancelConfirm.onclick = () => confirmDialog.style.display = "none";
 
   yesConfirm.onclick = async () => {
-    confirmDialog.classList.remove("active");
-    loadingOverlay.classList.add("active");
+    confirmDialog.style.display = "none";
+    loadingOverlay.style.display = "flex";
 
     try {
       const res = await fetch(`${API}/wallet/withdraw`, {
@@ -183,15 +194,21 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (e) {
       showToast(e.message || "Withdrawal failed", "error");
     } finally {
-      loadingOverlay.classList.remove("active");
+      loadingOverlay.style.display = "none";
     }
   };
 
+  /* ================= SEND ================= */
   const sendModal = document.getElementById("sendModal");
   const closeSend = document.getElementById("closeSend");
 
-  document.getElementById("sendBtn").onclick = () => sendModal.style.display = "flex";
-  closeSend.onclick = () => sendModal.style.display = "none";
+  document.getElementById("sendBtn").onclick = () => {
+    sendModal.style.display = "flex";
+  };
+
+  closeSend.onclick = () => {
+    sendModal.style.display = "none";
+  };
 
   document.getElementById("confirmSend").onclick = () => {
     const addr = document.getElementById("sendAddress").value.trim();
@@ -206,15 +223,19 @@ document.addEventListener("DOMContentLoaded", () => {
     sendModal.style.display = "none";
   };
 
+  /* ================= DEPOSIT ================= */
   const depositModal = document.getElementById("depositModal");
   const closeDeposit = document.getElementById("closeDeposit");
 
   document.getElementById("depositBtn").onclick = () => {
     depositModal.style.display = "flex";
-    document.getElementById("depositAddress").textContent = document.getElementById("depositAddress").textContent || "Loading...";
+    document.getElementById("depositAddress").textContent = 
+      document.getElementById("depositAddress").textContent || "Loading...";
   };
 
-  closeDeposit.onclick = () => depositModal.style.display = "none";
+  closeDeposit.onclick = () => {
+    depositModal.style.display = "none";
+  };
 
   document.getElementById("copyDeposit").onclick = () => {
     const addr = document.getElementById("depositAddress").textContent;
@@ -222,22 +243,25 @@ document.addEventListener("DOMContentLoaded", () => {
     showToast("Deposit address copied", "success");
   };
 
-  // Mobile Sidebar Toggle
+  // Mobile sidebar toggle (for the new responsive layout)
   const menuToggle = document.getElementById("menuToggle");
   const sidebar = document.getElementById("sidebar");
 
-  menuToggle.addEventListener("click", () => {
-    sidebar.classList.toggle("open");
-  });
-
-  document.querySelectorAll(".nav-item").forEach(item => {
-    item.addEventListener("click", () => {
-      if (window.innerWidth <= 900) {
-        sidebar.classList.remove("open");
-      }
+  if (menuToggle && sidebar) {
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
     });
-  });
 
+    document.querySelectorAll(".nav-item").forEach(item => {
+      item.addEventListener("click", () => {
+        if (window.innerWidth <= 900) {
+          sidebar.classList.remove("open");
+        }
+      });
+    });
+  }
+
+  // Close modals when clicking outside
   document.querySelectorAll('.modal').forEach(modal => {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) modal.style.display = "none";
