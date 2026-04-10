@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("profileBalance").textContent = `Balance: $${currentBalance.toFixed(2)}`;
 
     document.getElementById("withdrawAmount").placeholder =
-      `Amount ,`;
+      `minimum $3500 `;
 
     // Profile icon initial
     document.getElementById("profileIcon").innerHTML = 
